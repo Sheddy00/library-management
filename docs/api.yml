@@ -138,13 +138,7 @@ paths:
           required: false
       responses:
         200:
-          description: The list of filtered authors
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Author'
+          $ref: "#/components/responses/AuthorList_200"
         400:
           $ref: '#/components/responses/400'
         403:
@@ -257,6 +251,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/BookListBody'
+    AuthorList_200:
+      description: List filtered of authors.
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/AuthorListBody'
     400:
       description: Bad Request
       content:
@@ -324,6 +324,14 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Book'
+    AuthorListBody:
+      allOf:
+        - $ref: '#/components/schemas/ResponseBodyTemplate'
+        - properties:
+            body:
+              type: array
+              items:
+                $ref: '#/components/schemas/Author'
     Book:
       type: object
       properties:
