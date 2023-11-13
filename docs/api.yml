@@ -50,6 +50,8 @@ paths:
           $ref: '#/components/responses/400'
         403:
           $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
     put:
       tags:
         - Books
@@ -67,6 +69,10 @@ paths:
           $ref: '#/components/responses/BookList_200'
         400:
           $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
   /books/{bookId}/authors/{authorId}:
     put:
       tags:
@@ -86,11 +92,13 @@ paths:
           required: true
       responses:
         200:
-          description: The updated book
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Book'
+          $ref: '#/components/schemas/BookListBody'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
   /books/authors:
     put:
       tags:
@@ -106,13 +114,13 @@ paths:
                 $ref: '#/components/schemas/UpdateBook'
       responses:
         200:
-          description: List of updated books
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Book'
+          $ref: '#/components/schemas/BookListBody'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
   /authors:
     get:
       summary: Get all authors
@@ -137,6 +145,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Author'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
     put:
       summary: Create or update authors
       operationId: crupdateAuthors
@@ -158,6 +172,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Author'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
   /authors/page/{page}/size/{size}:
     get:
       tags:
@@ -182,6 +202,12 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Author'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
   /authors/{aId}:
     delete:
       summary: Delete an author
@@ -202,6 +228,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Author'
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
 components:
   parameters:
     Page:
@@ -237,6 +269,12 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/ForbiddenBody'
+    500:
+      description: Internal Sever Error
+      content:
+        application/json:
+          schema: 
+            $ref: '#/components/schemas/InternalServerErrorBody'
   schemas:
     ResponseStatus:
       type: object
@@ -270,6 +308,14 @@ components:
           code: 403
           message: FORBIDDEN
         body: { }
+    InternalServerErrorBody:
+      allOf:
+        - $ref: '#/components/schemas/ResponseBodyTemplate'
+      example:
+        status:
+          code: 500
+          message: INTERNAL SERVER ERROR 
+          body: { }
     BookListBody:
       allOf:
         - $ref: '#/components/schemas/ResponseBodyTemplate'
@@ -304,6 +350,22 @@ components:
       properties:
         id:
           type: string
+        bookName:
+          type: string
+        pageNumbers:
+          type: integer
+        topic:
+          type: string
+          enum:
+            - ROMANCE
+            - COMEDY
+            - OTHER
+        releaseDate:
+          type: string
+          format: date
+    UpdateBook :
+      type: object
+      properties:
         bookName:
           type: string
         pageNumbers:
