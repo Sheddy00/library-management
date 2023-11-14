@@ -8,6 +8,7 @@ servers:
 tags:
   - Books
   - Authors
+  - Visitors
 paths:
   /books:
     get:
@@ -228,6 +229,14 @@ paths:
           $ref: '#/components/responses/403'
         500 : 
           $ref: '#/components/responses/500'
+  /visitors: 
+    get:
+      tags:
+        - "Visitors"
+      summary: List of visitors 
+      responses:
+        200: 
+          $ref: "#/components/responses/VisitorList_200" 
 components:
   parameters:
     Page:
@@ -257,6 +266,12 @@ components:
         application/json:
           schema: 
             $ref: '#/components/schemas/AuthorListBody'
+    VisitorList_200: 
+      description: List of visitors
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/VisitorListBody' 
     400:
       description: Bad Request
       content:
@@ -332,6 +347,23 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Author'
+    VisitorListBody:
+      allOf:
+        - $ref: '#/components/schemas/ResponseBodyTemplate'
+        - properties:
+            body:
+              type: array
+              items :
+                $ref: '#/components/schemas/Visitor'
+    Visitor: 
+      type: object
+      properties:
+        id: 
+          type: string 
+        name : 
+          type: string
+        reference :
+          type: string
     Book:
       type: object
       properties:
