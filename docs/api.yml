@@ -237,6 +237,116 @@ paths:
       responses:
         200: 
           $ref: "#/components/responses/VisitorList_200" 
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
+    post: 
+      tags:
+        - "Visitors"
+      summary: Create new visitors 
+      requestBody: 
+        required: true 
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/Visitor"
+      responses:
+        200: 
+          $ref: "#/components/responses/VisitorList_200"
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
+  /bookAvailable :
+    get :
+      tags:
+        - "Books"
+      summary: List of available books 
+      responses:
+        200: 
+          $ref: "#/components/responses/BookList_200"
+    post: 
+      tags:
+        - "Books"
+      summary: borrow a book 
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Borrowing"
+      security:
+        - OAuth2: [admin]
+      responses:
+        200: 
+          description: Borrowed
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Borrowing"
+  /Books/{bookId}/borrow:
+    post: 
+      summary: Borrow a book
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          description: ID of book borrowed
+          schema: 
+            type: string
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema: 
+              $ref: "#/components/schemas/BorrowRequest"
+      responses:
+        200: 
+          description: Borrowed successfully
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Borrowing"
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
+  /books/{bookId}/render:
+    post: 
+      summary: return a book borrowed
+      parameters:
+        - name: bookId
+          in: path
+          required: true
+          description: ID of book to hand in
+          schema: 
+            type: string
+      requestBody: 
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RendRequest'
+      responses:
+        200: 
+          description: Book successfully delivered
+          content:
+            application/json:
+              schema: 
+                $ref: "#/components/schemas/Rendering"
+        400:
+          $ref: '#/components/responses/400'
+        403:
+          $ref: '#/components/responses/403'
+        500 : 
+          $ref: '#/components/responses/500'
 components:
   parameters:
     Page:
@@ -419,3 +529,48 @@ components:
         releaseDate:
           type: string
           format: date
+    Borrowing:
+      type: object
+      properties:
+        id:
+          type: string
+        visitor: 
+          $ref: "#/components/schemas/Visitor"
+        book :
+          $ref: "#/components/schemas/Book"
+        loan_date:
+          type: string
+          format: date-time
+    Rendering: 
+      type: object
+      properties:
+        id: 
+          type: string
+        visitorId:
+          type: string
+        bookId: 
+          type: string
+        renderDate: 
+          type: string
+          format: date-time
+    BorrowRequest:
+      type: object
+      properties:
+        visitorId:
+          type: string
+          description: ID of visitor who borrow the book
+    RendRequest:
+      type: object
+      properties:
+        visitorId:
+          type: string
+          description: ID of visitor who rend the book
+  securitySchemes:
+    OAuth2:
+      type: oauth2
+      flows:
+        authorizationCode:
+          authorizationUrl: autorisation URL for OAuth
+          tokenUrl: 'jeton URL of OAuth'
+          scopes:
+            admin: Administrator acces
